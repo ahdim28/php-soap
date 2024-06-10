@@ -20,27 +20,27 @@
         <?php if ($_GET['page'] == 'add') { ?>
             <legend>Tambah Data</legend>
             <form name="form" action="proses.php" method="POST">
-                <input type="hidden" name="aksi" value="add">
+                <input type="hidden" name="action" value="add">
                 <label for="">ID Barang</label>
-                <input type="text" name="id_barang">
+                <input type="text" name="id">
                 <br>
                 <label for="">Nama Barang</label>
-                <input type="text" name="nama_barang">
+                <input type="text" name="nama">
                 <br>
                 <button type="submit" name="save">Simpan</button>
             </form>
         <?php } elseif ($_GET['page'] == 'update') {
-            $getOneData = $abc->showData($_GET['id_barang']);
+            $getOneData = $abc->show($_GET['id']);
         ?>
             <legend>Ubah Data</legend>
             <form name="form" action="proses.php" method="POST">
-                <input type="hidden" name="aksi" value="update">
-                <input type="hidden" name="id_barang" value="<?= $getOneData['id_barang']?>">
+                <input type="hidden" name="action" value="update">
+                <input type="hidden" name="id" value="<?= $getOneData['id']?>">
                 <label for="">ID Barang</label>
-                <input type="text" value="<?= $getOneData['id_barang']?>" disabled>
+                <input type="text" value="<?= $getOneData['id']?>" disabled>
                 <br>
                 <label for="">Nama Barang</label>
-                <input type="text" name="nama_barang" value="<?= $getOneData['nama_barang']?>">
+                <input type="text" name="nama" value="<?= $getOneData['nama']?>">
                 <br>
                 <button type="submit" name="update">Ubah</button>
             </form>
@@ -58,22 +58,22 @@
                 <tbody>
                     <?php
                         $no = 1;
-                        $dataArray = $abc->showAllData();
-                        foreach ($dataArray as $item) {
+                        $result = $abc->showAll();
+                        foreach ($result as $item) {
                     ?>
                     <tr>
                         <td><?= $no++?></td>
-                        <td><?= $item['id_barang']?></td>
-                        <td><?= $item['nama_barang']?></td>
+                        <td><?= $item['id']?></td>
+                        <td><?= $item['nama']?></td>
                         <td>
-                            <a href="?page=update&id_barang=<?= $item['id_barang']?>">Ubah</a>
+                            <a href="?page=update&id=<?= $item['id']?>">Ubah</a>
                         </td>
                         <td>
-                            <a href="proses.php?aksi=delete&id_barang=<?= $item['id_barang']?>" 
+                            <a href="proses.php?action=delete&id=<?= $item['id']?>" 
                                 onclick="return confirm('Apakah anda ingin menghapus data ini ?')">Hapus</a>
                         </td>
                     </tr>
-                    <?php } unset($dataArray, $item, $no); ?>
+                    <?php } unset($result, $item, $no); ?>
                 </tbody>
             </table>
         <?php } else {?>

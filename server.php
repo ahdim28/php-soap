@@ -1,9 +1,9 @@
 <?php
 
 error_reporting(1);
-include 'database.php';
+include 'Database.php';
 
-$uri = 'http:://192.168.56.30';
+$uri = 'http://kuliah.vm/';
 
 // set uri server
 $options = ['uri' => $uri];
@@ -12,7 +12,7 @@ $options = ['uri' => $uri];
 $server = new SoapServer(NULL, $options);
 
 // masukan class database ke objek SOAP Server
-$server->setClass('database');
+$server->setClass('Database');
 
 // jalankan menggunakan SOAP request handler
 $server->handle();

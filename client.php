@@ -2,7 +2,7 @@
 
 error_reporting(1);
 
-class client
+class Client
 {
     private $options, $api;
 
@@ -21,51 +21,99 @@ class client
         unset($uri, $location);
     }
 
-    // fungsi untuk menghapus selain huruf dan angka
-    public function filter(string $data): string 
+    /**
+     * fungsi untuk menghapus selain huruf dan angka
+     * 
+     * @param string $filter
+     * 
+     * @return string
+     */
+    public function filter(string $filter): string 
     {
-        $data = preg_replace('/[^a-zA-Z0-9]/', '', $data);
-        return $data;
+        $filter = preg_replace('/[^a-zA-Z0-9]/', '', $filter);
+
+        return $filter;
         
-        unset($data);
+        unset($filter);
     }
 
-    public function showAllData()
+    /**
+     * fungsi untuk menampilkan data
+     * 
+     * @return mix
+     */
+    public function showAll()
     {
-        $data = $this->api->showAllData();
+        $data = $this->api->showAll();
+
         return $data;
 
         unset($data);
     }
 
-    public function showData(string $idBarang): array
+    /**
+     * fungsi untuk menampilkan data berdasarkan ID
+     * 
+     * @param string $id
+     * 
+     * @return array
+     */
+    public function show(string $id): array
     {
-        $idBarang = $this->filter($idBarang);
-        $data = $this->api->showData($idBarang);
+        $id = $this->filter($id);
+        $data = $this->api->show($id);
+
         return $data;
 
-        unset($idBarang, $data);
+        unset($id, $data);
     }
 
-    public function create(array $input): void
+    /**
+     * fungsi untuk insert data
+     * 
+     * @param array $input
+     * 
+     * @return bool
+     */
+    public function create(array $input): bool
     {
-        $this->api->create($input);
+        $create = $this->api->create($input);
+
+        return $create;
 
         unset($input);
     }
 
-    public function update(array $input): void
+    /**
+     * fungsi untuk update data
+     * 
+     * @param array $input
+     * 
+     * @return bool
+     */
+    public function update(array $input): bool
     {
-        $this->api->update($input);
+        $update = $this->api->update($input);
+
+        return $update;
 
         unset($input);
     }
 
-    public function delete(string $idBarang): void
+    /**
+     * fungsi untuk hapus data
+     * 
+     * @param string $id
+     * 
+     * @return bool
+     */
+    public function delete(string $id): bool
     {
-        $this->api->delete($idBarang);
+        $delete = $this->api->delete($id);
 
-        unset($idBarang);
+        return $delete;
+
+        unset($id);
     }
 
     // fungsi yang terakhir kali diload saat class dipanggil
@@ -77,8 +125,8 @@ class client
 }
 
 // url dan location server
-$uri = 'http://192.168.56.30';
-$location = $uri.'soap-toko/soap-server/server.php';
+$uri = 'http://kuliah.vm/';
+$location = $uri.'sister/soap/server.php';
 
 // buat objek baru dari class client
-$abc = new client($uri, $location);
+$abc = new Client($uri, $location);

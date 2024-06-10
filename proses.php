@@ -1,27 +1,27 @@
 <?php
 
 error_reporting(1);
-include 'client.php';
+include 'Client.php';
 
-if ($_POST['aksi'] == 'add') {
+if ($_POST['action'] == 'add') {
     
     $abc->create([
-        'id_barang' => $_POST['id_barang'],
-        'nama_barang' => $_POST['nama_barang']
+        'id' => $_POST['id'],
+        'nama' => $_POST['nama']
     ]);
     header('location:index.php?page=list');
 
-} elseif ($_POST['aksi'] == 'update') {
+} elseif ($_POST['action'] == 'update') {
 
     $abc->update([
-        'id_barang' => $_POST['id_barang'],
-        'nama_barang' => $_POST['nama_barang']
+        'id' => $_POST['id'],
+        'nama' => $_POST['nama']
     ]);
     header('location:index.php?page=list');
 
-} elseif ($_GET['aksi'] == 'delete') {
+} elseif ($_GET['action'] == 'delete') {
 
-    $abc->delete($_GET['id_barang']);
+    $abc->delete($_GET['id']);
     header('location:index.php?page=list');
     
 }

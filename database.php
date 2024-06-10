@@ -4,11 +4,14 @@ error_reporting(1); // tampilkan error
 
 class Database
 {
-    private $host = "localhost";
-    private $dbname = "kuliah_sister_toko";
-    private $user = "root";
+    // set variable yang dibutuhkan
+    private $hostname  = "localhost";
+    private $username = "root";
     private $password = "";
-    private $port = "3306";
+    private $dbname = "kuliah_sister_toko";
+    private $port = null;
+    private $socket = null;
+    //
     private $conn;
 
     // fungsi yang pertama kali diload saat class dipanggil
@@ -16,56 +19,116 @@ class Database
     {
         try {
 
-            $this->conn = new PDO(
-                "mysql:host=$this->host;port=$this->port;dbname=$this->dbname;charset=utf8", 
-                $this->user,
-                $this->password
+            $this->conn = new mysqli(
+                $this->hostname , 
+                $this->username, 
+                $this->password, 
+                $this->dbname, 
+                $this->port,
+                $this->socket
             );
 
-        } catch (PDOException $th) {
-            echo "Koneksi Gagal";
+        } catch (PDOException $e) {
+            echo "Koneksi database gagal. Error : ".$e->getMessage();
         }   
     }
 
-    public function list(int $idBarang): array
+    /**
+     * fungsi untuk menampilkan semua data
+     */
+    public function showAll()
     {
-        $query = $this->conn->prepare("SELECT id_barang, nama_barang, FROM barang WHERE id_barang=?");
-        $query->execute([$idBarang]);
+        $query = $this->conn->query("SELECT id, nama FROM barang ORDER BY id DESC");
+        
+        $data = [];
+        if ($query->num_rows > 0) {
+            while ($row = $query->fetch_assoc()) {
+                $data[] = [
+                    'id' => $row['id'],
+                    'nama' => $row['nama']
+                ];
+            }
+        }
 
-        // mengambil satu data dengan fetch
-        $data = $query->fetch(PDO::FETCH_ASSOC);
-        // mengembalikan data
+        return $data;
+        
+        $query->close();
+        unset($data);
+    }
+
+    /**
+     * fungsi untuk menampilkan data berdasarkan ID
+     * 
+     * @param string $id
+     * 
+     * @return array
+     */
+    public function show(string $id): array
+    {
+        $query = $this->conn->query("SELECT id, nama FROM barang WHERE id = $id");
+        
+        $data = $query->fetch_assoc();
+
         return $data;
 
-        // hapus variable dari memory
-        $query->closeCursor();
-        unset($idBarang, $data);
+        $query->close();
+        unset($id, $data);
     }
 
-    public function create(array $input): void
+    /**
+     * fungsi untuk insert data
+     * 
+     * @param array $input
+     * 
+     * @return bool
+     */
+    public function create(array $input = []): bool
     {
-        $query = $this->conn->prepare("INSERT IGNORE INTO barang (id_barang, nama_barang) VALUES (?, ?)");
-        $query->execute([$input['id_barang'], $input['nama_barang']]);
-        $query->closeCursor();
+        $id = $input['id'];
+        $nama = $input['nama'];
 
+        $query = $this->conn->query("INSERT INTO barang (id, nama) VALUES ('$id', '$nama')");
+
+        return $query;
+
+        $query->close();
         unset($input);
     }
 
-    public function update(array $input): void
+    /**
+     * fungsi untuk update data
+     * 
+     * @param array $input
+     * 
+     * @return bool
+     */
+    public function update(array $input = []): bool
     {
-        $query = $this->conn->prepare("UPDATE barang SET nama_barang=? WHERE id_barang=?");
-        $query->execute([$input['nama_barang'], $input['id_barang']]);
-        $query->closeCursor();
+        $id = $input['id'];
+        $nama = $input['nama'];
 
+        $query = $this->conn->query("UPDATE barang SET id = '$id', nama = '$nama' WHERE id = '$id'");
+
+        return $query;
+
+        $query->close();
         unset($input);
     }
 
-    public function delete(int $idBarang): void
+    /**
+     * fungsi untuk hapus data
+     * 
+     * @param string $id
+     * 
+     * @return bool
+     */
+    public function delete(string $id): bool
     {
-        $query = $this->conn->prepare("DELETE FROM barang WHERE id_barang=?");
-        $query->execute([$idBarang]);
-        $query->closeCursor();
+        $query = $this->conn->query("DELETE FROM barang WHERE id = '$id'");
 
-        unset($idBarang);
+        return $query;
+
+        $query->close();
+        unset($id);
     }
 }
